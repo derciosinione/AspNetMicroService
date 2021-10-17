@@ -82,9 +82,27 @@ namespace Catalog.Api.Controllers
         public async Task<ActionResult<Product>> CreateProduct([FromBody] Product product)
         {
             await _repository.CreateProduct(product);
-            
+
             return CreatedAtRoute(nameof(Created), new { id = product.Id}, product);
         }
-    
+
+        [HttpPut]
+        [ProducesResponseType(typeof(Product), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<Product>> UpdateProduct([FromBody] Product product)
+        {
+            await _repository.CreateProduct(product);
+
+            return CreatedAtRoute(nameof(Created), new { id = product.Id}, product);
+        }
+
+        [HttpGet("{id:length(24)}", Name = nameof(DeleteProduct))]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(Product), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<Product>> DeleteProduct(string id)
+        {
+            var result = await _repository.DeleteProduct(id);
+            return Ok(result);
+        }
+
     }
 }
