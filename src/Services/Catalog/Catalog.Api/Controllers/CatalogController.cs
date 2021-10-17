@@ -1,3 +1,5 @@
+using System.Net;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Catalog.Api.Models;
@@ -21,9 +23,25 @@ namespace Catalog.Api.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<Product>), (int)HttpStatusCode.OK)]
         public async Task<ActionResult<IEnumerable<Product>>> GetProduts()
         {
             var result = await _repository.GetProducts();
+            return Ok(result);
+        }
+
+        [HttpGet("{id:lenght(24)}", Name = "GetProduct")]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(Product), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<Product>> GetProduct(string id)
+        {
+            var result = await _repository.GetProduct(id);
+            if(result is null)
+            {
+                _logger.LogError($"Product with id: {id}, not found.");
+                return NotFound();
+            }
+            
             return Ok(result);
         }
     }
